@@ -47,7 +47,10 @@ try:
         bgrLower = np.array([B_min, G_min, R_min])    # 抽出する色の下限(BGR)
         bgrUpper = np.array([B_max, G_max, R_max])    # 抽出する色の上限(BGR)
         img_mask = cv2.inRange(img, bgrLower, bgrUpper) # BGRからマスクを作成
-  
+        
+        mask_red1 = cv2.inRange(img, (0, 127, 127), (30, 255, 255))
+        mask_red2 = cv2.inRange(img, (240, 127, 127), (255, 255, 255))
+        img = cv2.bitwise_or(mask_red1, mask_red2)
 
         #論理演算で色検出
         dst = cv2.bitwise_and(img, img, mask=img_mask)
