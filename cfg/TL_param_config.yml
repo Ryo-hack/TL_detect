@@ -1,7 +1,9 @@
 member_list:
-  - name: aaa
-    id: 1
-  - name: bbb
-    id: 2
-  - name: ccc
-    id: 3
+  - blue_threshold : 100
+  - blue_h : 80
+  - blue_s : 80
+  - blue_v :  0
+  - red_threshold : 100
+  - red_h : 0
+  - red_s : 0
+  - red_v : 76

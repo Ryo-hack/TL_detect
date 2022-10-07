@@ -10,6 +10,7 @@ from std_msgs.msg import String
 
 class color_detect :
     def __init__(self):
+        self.TL_param = rospy.search_param('TL_param_config.yml')
         self.node_name = "color_detect"
         self.topic_name = "/usb_cam1/image_raw/compressed"
         self.bridge = CvBridge()
@@ -18,14 +19,15 @@ class color_detect :
         self.stop_pub = rospy.Publisher("stop", String, queue_size=10)
         self.go_pub = rospy.Publisher("go", String, queue_size=10)
         self.image_sub = rospy.Subscriber(self.topic_name, CompressedImage, self.image_callback)
-        #self.blue_threshold 
-        #self.blue_h 
-        #self.blue_s
-        #self.blue_v
-        #self.red_threshold
-        #self.red_h
-        #self.red_s
-        #self.red_v
+        self.blue_threshold = rospy.get_param(self.TL_param/blue_threshold)     
+        self.blue_h  = rospy.get_param(self.TL_param/blue_h)
+        self.blue_s = rospy.get_param(self.TL_param/blue_s)
+        self.blue_v = rospy.get_param(self.TL_param/blue_v)
+        self.red_threshold = rospy.get_param(self.TL_param/red_threshold)
+        self.red_h = rospy.get_param(self.TL_param/red_h) 
+        self.red_s = rospy.get_param(self.TL_param/red_s)
+        self.red_v = rospy.get_param(self.TL_param/red_v)
+
 
 
     def image_callback(self,image_msg):
@@ -48,11 +50,11 @@ class color_detect :
         #色面積
         redPixels = cv2.countNonZero(red_img_mask)
         bluePixels = cv2.countNonZero(blue_img_mask)
-        if redPixels >=100:
+        if redPixels >=self.blue_threshold:
             rospy.loginfo('stop')
             msg = "stop {}".format(rospy.get_time())
             self.stop_pub.publish(msg)
-        if bluePixels >=100:
+        if bluePixels >=self.red_threshold:
             msg = "go {}".format(rospy.get_time())
             self.go_pub.publish(msg)
             rospy.loginfo('go')
