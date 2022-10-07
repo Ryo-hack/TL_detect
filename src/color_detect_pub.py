@@ -19,14 +19,22 @@ class color_detect :
         self.stop_pub = rospy.Publisher("stop", String, queue_size=10)
         self.go_pub = rospy.Publisher("go", String, queue_size=10)
         self.image_sub = rospy.Subscriber(self.topic_name, CompressedImage, self.image_callback)
-        self.blue_threshold = rospy.get_param(self.TL_param/blue_threshold)     
-        self.blue_h  = rospy.get_param(self.TL_param/blue_h)
-        self.blue_s = rospy.get_param(self.TL_param/blue_s)
-        self.blue_v = rospy.get_param(self.TL_param/blue_v)
-        self.red_threshold = rospy.get_param(self.TL_param/red_threshold)
-        self.red_h = rospy.get_param(self.TL_param/red_h) 
-        self.red_s = rospy.get_param(self.TL_param/red_s)
-        self.red_v = rospy.get_param(self.TL_param/red_v)
+
+        self.blue_threshold = rospy.get_param('~blue_threshold',100)     
+        self.blue_h_mim  = rospy.get_param('~blue_h_mim',80)
+        self.blue_s_mim = rospy.get_param('~blue_s_mim',80)
+        self.blue_v_mim = rospy.get_param('~blue_v_mim',0)
+        self.blue_h_max  = rospy.get_param('~blue_h_max',115)
+        self.blue_s_max = rospy.get_param('~blue_s_max',127)
+        self.blue_v_max = rospy.get_param('~blue_v_max',200)
+
+        self.red_threshold = rospy.get_param('~red_threshold',100)
+        self.red_h_mim = rospy.get_param('~red_h_mim',0)
+        self.red_s_mim = rospy.get_param('~red_s_mim',0)
+        self.red_v_mim = rospy.get_param('~red_v_mim',76)
+        self.red_h_max = rospy.get_param('~red_h_max',35)
+        self.red_s_max = rospy.get_param('~red_s_max',127)
+        self.red_v_max = rospy.get_param('~red_v_max',200)
 
 
 
@@ -45,8 +53,8 @@ class color_detect :
         # フレーム待ち
         img = frame
         #色検出
-        blue_img_mask = cv2.inRange(img, np.array([80, 80,0]), np.array([115, 127, 200]))
-        red_img_mask = cv2.inRange(img, np.array([0, 0,76]), np.array([35, 127, 200]))
+        blue_img_mask = cv2.inRange(img, np.array([self.blue_h_mim, self.blue_s_mim,self.blue_v_mim]), np.array([self.blue_h_max , self.blue_s_max , self.blue_v_max ]))
+        red_img_mask = cv2.inRange(img, np.array([self.red_h_mim,self.red_s_mim,self.red_v_mim]), np.array([self.red_h_max,self.red_s_max, self.red_v_max]))
         #色面積
         redPixels = cv2.countNonZero(red_img_mask)
         bluePixels = cv2.countNonZero(blue_img_mask)

@@ -1,9 +1,15 @@
 member_list:
   - blue_threshold : 100
-  - blue_h : 80
-  - blue_s : 80
-  - blue_v :  0
+  - blue_h_min : 80
+  - blue_s_min : 80
+  - blue_v_min :  0
+  - blue_h_max : 80
+  - blue_s_max : 80
+  - blue_v_max :  0
   - red_threshold : 100
-  - red_h : 0
-  - red_s : 0
-  - red_v : 76
+  - red_h_min : 0
+  - red_s_min : 0
+  - red_v_min : 76
+  - red_h_max : 0
+  - red_s_max : 0
+  - red_v_max : 76
