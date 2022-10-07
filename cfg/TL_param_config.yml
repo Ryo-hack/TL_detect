@@ -1,0 +1,7 @@
+member_list:
+  - name: aaa
+    id: 1
+  - name: bbb
+    id: 2
+  - name: ccc
+    id: 3
