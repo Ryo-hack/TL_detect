@@ -11,22 +11,23 @@ from std_msgs.msg import String
 class color_detect :
     def __init__(self):
         self.node_name = "color_detect"
+        self.topic_name = "/usb_cam1/image_raw/compressed"
         self.bridge = CvBridge()
         rospy.init_node(self.node_name)
         self.image_pub = rospy.Publisher('output_image', Image, queue_size=10)
         self.stop_pub = rospy.Publisher("stop", String, queue_size=10)
         self.go_pub = rospy.Publisher("go", String, queue_size=10)
-        self.image_sub = rospy.Subscriber("/usb_cam1/image_raw/compressed", CompressedImage, self.image_callback)
-        self.blue_threshold
-        self.blue_h 
-        self.blue_s
-        self.blue_v
-        self.red_threshold
-        self.red_h
-        self.red_s
-        self.red_v
+        self.image_sub = rospy.Subscriber(self.topic_name, CompressedImage, self.image_callback)
+        #self.blue_threshold 
+        #self.blue_h 
+        #self.blue_s
+        #self.blue_v
+        #self.red_threshold
+        #self.red_h
+        #self.red_s
+        #self.red_v
 
-        
+
     def image_callback(self,image_msg):
         try:
                 np_arr = np.fromstring(image_msg.data, np.uint8)
