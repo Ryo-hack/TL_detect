@@ -1,0 +1,5 @@
+<launch>
+    <node name="color_detect_pub" pkg="TL_detect" type="color_detect_pub.py" output="screen">
+        <rosparam command="load" file="$(find TL_detect)/cfg/TL_param_config.yml"/>
+    </node>
+</launch>
