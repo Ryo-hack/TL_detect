@@ -2,9 +2,11 @@
 # -*- coding:utf-8 -*-
 
 from ast import Str
+from email.mime import image
 import numpy as np
 import cv2
 import rospy
+from copy import deepcopy
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CompressedImage
 from cv_bridge import CvBridge
@@ -48,7 +50,7 @@ class color_detect :
         #        rospy.loginfo('err')
         input_image = self.bridge.imgmsg_to_cv2(image_msg,"bgr8")
         output_image = self.process_image(input_image)
-        self.image_pub.publish(self.bridge.cv2_to_imgmsg(output_image, "8UC1"))
+        self.image_pub.publish(self.bridge.cv2_to_imgmsg(output_image, "bgr8"))
         #self.image_pub.publish(self.bridge.cv2_to_imgmsg(image_msg))
 
 
@@ -62,6 +64,13 @@ class color_detect :
         #色面積
         redPixels = cv2.countNonZero(red_img_mask)
         bluePixels = cv2.countNonZero(blue_img_mask)
+
+        #表示用に青と赤の結果を合体
+        red = (red_img_mask==255)
+        blue = (blue_img_mask==255)
+        img_mask = deepcopy(img)
+        img_mask[red] = [0,0,255]
+        img_mask[blue] = [255,0,0]
 
         # state publisher
         state_msg=String()
@@ -83,7 +92,7 @@ class color_detect :
         #cv2.imshow('red_detect_image', red_img_mask)
         #cv2.waitKey(1)
 
-        return  red_img_mask
+        return  img_mask
 
 
 if __name__ == '__main__':
