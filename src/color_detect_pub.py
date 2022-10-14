@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
 from ast import Str
@@ -14,12 +14,13 @@ class color_detect :
     def __init__(self):
         self.TL_param = rospy.search_param('TL_param_config.yml')
         self.node_name = "color_detect"
-        self.topic_name = "/image_raw"
+        self.topic_name = "/camera/image_color"
         self.bridge = CvBridge()
         rospy.init_node(self.node_name)
-        self.image_pub = rospy.Publisher('output_image', Image, queue_size=10)
+        self.red_image_pub = rospy.Publisher('red_output_image', Image, queue_size=10)
+        self.blue_image_pub = rospy.Publisher('blue_output_image', Image, queue_size=10)
         self.state_pub = rospy.Publisher("tl_state", String, queue_size=10)
-        self.image_sub = rospy.Subscriber("/image_raw", Image, self.image_callback)
+        self.image_sub = rospy.Subscriber(self.topic_name, Image, self.image_callback)
 
         self.blue_threshold = rospy.get_param('~blue_threshold',100)     
         self.blue_h_mim  = rospy.get_param('~blue_h_mim',80)
@@ -40,16 +41,10 @@ class color_detect :
 
 
     def image_callback(self,image_msg):
-
-        #try:
-        #        np_arr = np.fromstring(image_msg.data, np.uint8)
-        #        input_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-        #except Exception as err:
-        #        rospy.loginfo('err')
         input_image = self.bridge.imgmsg_to_cv2(image_msg,"bgr8")
-        output_image = self.process_image(input_image)
-        self.image_pub.publish(self.bridge.cv2_to_imgmsg(output_image, "8UC1"))
-        #self.image_pub.publish(self.bridge.cv2_to_imgmsg(image_msg))
+        output_image  = self.process_image(input_image)
+        self.red_image_pub.publish(self.bridge.cv2_to_imgmsg(output_image[0], "8UC1"))
+        self.blue_image_pub.publish(self.bridge.cv2_to_imgmsg(output_image[1], "8UC1"))
 
 
     def process_image(self, frame):### ここに加工処理などを記述する ###
@@ -73,17 +68,8 @@ class color_detect :
             state_msg.data = "unknown"
         self.state_pub.publish(state_msg)
 
-        #print(redPixels)
-        # 表示
-        #cv2.namedWindow('color_image', cv2.WINDOW_AUTOSIZE)
-        #cv2.imshow('color_image', img)
-        #cv2.namedWindow('blue_detect_image', cv2.WINDOW_AUTOSIZE)
-        #cv2.imshow('blue_detect_image', blue_img_mask)
-        #cv2.namedWindow('red_detect_image', cv2.WINDOW_AUTOSIZE)
-        #cv2.imshow('red_detect_image', red_img_mask)
-        #cv2.waitKey(1)
 
-        return  red_img_mask
+        return  [red_img_mask ,blue_img_mask]
 
 
 if __name__ == '__main__':
