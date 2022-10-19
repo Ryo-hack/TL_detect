@@ -36,10 +36,6 @@ class color_detect :
         self.red_s_max = rospy.get_param('~red_s_max',127)
         self.red_v_max = rospy.get_param('~red_v_max',200)
 
-        print(self.blue_h_min)
-
-
-
     def image_callback(self,image_msg):
 
         #try:
@@ -57,15 +53,16 @@ class color_detect :
         # フレーム待ち
         img = frame
         #色検出
-        blue_img_mask = cv2.inRange(img, np.array([self.blue_h_min, self.blue_s_min,self.blue_v_min]), np.array([self.blue_h_max , self.blue_s_max , self.blue_v_max ]))
-        red_img_mask = cv2.inRange(img, np.array([self.red_h_min,self.red_s_min,self.red_v_min]), np.array([self.red_h_max,self.red_s_max, self.red_v_max]))
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        blue_img_mask = cv2.inRange(hsv, np.array([self.blue_h_min, self.blue_s_min,self.blue_v_min]), np.array([self.blue_h_max , self.blue_s_max , self.blue_v_max ]))
+        red_img_mask = cv2.inRange(hsv, np.array([self.red_h_min,self.red_s_min,self.red_v_min]), np.array([self.red_h_max,self.red_s_max, self.red_v_max]))
         
         #色面積
         redPixels = cv2.countNonZero(red_img_mask)
         bluePixels = cv2.countNonZero(blue_img_mask)
 
-        kernel = np.ones((2,2),np.uint8)
-        blue_img_mask = cv2.erode(blue_img_mask,kernel,iterations = 1)
+        #kernel = np.ones((2,2),np.uint8)
+        #blue_img_mask = cv2.erode(blue_img_mask,kernel,iterations = 1)
 
         #表示用に青と赤の結果を合体
         red = (red_img_mask==255)
