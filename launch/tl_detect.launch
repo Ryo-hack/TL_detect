@@ -1,0 +1,22 @@
+<launch>
+    <arg name="rviz" default="true" />
+
+    <include file="$(find TL_detect)/launch/flir_camera.launch"/>
+
+    <node name="yolox" pkg="yolox_ros1" type="traffic_light_detector.py" output="screen">
+        <param name="weight_file" value="$(find yolox_ros1)/config/yolox/weight/yolox_l.pth"/>
+        <param name="exp_file" value="$(find yolox_ros1)/config/yolox/exp/yolox_l.py"/>
+        <param name="compute_device" value="gpu"/>
+        <remap from="image_raw" to="camera/image_raw"/>
+    </node>
+
+    <node name="color_detect_pub" pkg="TL_detect" type="color_detect_pub.py" output="screen">
+        <rosparam command="load" file="$(find TL_detect)/cfg/TL_param_config.yml"/>
+        <remap from="image_raw" to="tl_image"/>
+    </node>
+
+    <arg name="rviz_file" default="$(find TL_detect)/rviz/all_image_show.rviz" />
+    <group if="$(arg rviz)">
+        <node pkg="rviz" type="rviz" name="rviz" args="-d $(arg rviz_file)" respawn="true" />
+    </group>
+</launch>
