@@ -1,4 +1,9 @@
-blue_threshold : 20
+# threshold 画像に占める色の割合 0.0-1.0
+# h 色相　0-255
+# s 彩度　0-255
+# v 明度　0-255
+
+blue_threshold : 0.1
 blue_h_min : 40
 blue_s_min : 90
 blue_v_min :  30
@@ -6,7 +11,7 @@ blue_h_max : 127
 blue_s_max : 200
 blue_v_max :  150
 
-red_threshold : 50
+red_threshold : 0.07
 red_h_min : 0
 red_s_min : 45
 red_v_min : 80

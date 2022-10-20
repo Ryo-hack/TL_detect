@@ -20,7 +20,7 @@ class color_detect :
         self.state_pub = rospy.Publisher("tl_state", String, queue_size=10)
         self.image_sub = rospy.Subscriber("/image_raw", Image, self.image_callback)
 
-        self.blue_threshold = rospy.get_param('~blue_threshold',100)     
+        self.blue_threshold = rospy.get_param('~blue_threshold',0.1)     
         self.blue_h_min  = rospy.get_param('~blue_h_min',80)
         self.blue_s_min = rospy.get_param('~blue_s_min',50)
         self.blue_v_min = rospy.get_param('~blue_v_min',0)
@@ -28,7 +28,7 @@ class color_detect :
         self.blue_s_max = rospy.get_param('~blue_s_max',127)
         self.blue_v_max = rospy.get_param('~blue_v_max',170)
 
-        self.red_threshold = rospy.get_param('~red_threshold',100)
+        self.red_threshold = rospy.get_param('~red_threshold',0.1)
         self.red_h_min = rospy.get_param('~red_h_min',0)
         self.red_s_min = rospy.get_param('~red_s_min',0)
         self.red_v_min = rospy.get_param('~red_v_min',76)
@@ -52,6 +52,7 @@ class color_detect :
     def process_image(self, frame):### ここに加工処理などを記述する ###
         # フレーム待ち
         img = frame
+        height, width, channels = img.shape[:3]
         #色検出
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         blue_img_mask = cv2.inRange(hsv, np.array([self.blue_h_min, self.blue_s_min,self.blue_v_min]), np.array([self.blue_h_max , self.blue_s_max , self.blue_v_max ]))
@@ -74,10 +75,10 @@ class color_detect :
 
         # state publisher
         state_msg=String()
-        if redPixels >=self.red_threshold:
-            state_msg.data = "red"+str(redPixels)
-        elif bluePixels >=self.blue_threshold:
-            state_msg.data="blue"+str(bluePixels)
+        if redPixels >=self.red_threshold*(height*width):
+            state_msg.data = "red"+str(redPixels/(height*width))
+        elif bluePixels >=self.blue_threshold*(height*width):
+            state_msg.data="blue"+str(bluePixels/(height*width))
         else:
             state_msg.data = "unknown"
         self.state_pub.publish(state_msg)
