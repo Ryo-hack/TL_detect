@@ -61,8 +61,9 @@ class color_detect :
         redPixels = cv2.countNonZero(red_img_mask)
         bluePixels = cv2.countNonZero(blue_img_mask)
 
-        #kernel = np.ones((2,2),np.uint8)
-        #blue_img_mask = cv2.erode(blue_img_mask,kernel,iterations = 1)
+        kernel = np.ones((3,3),np.uint8)
+        blue_img_mask = cv2.erode(blue_img_mask,kernel,iterations = 1)
+        #blue_img_mask = cv2.morphologyEx(blue_img_mask, cv2.MORPH_CLOSE, kernel)
 
         #表示用に青と赤の結果を合体
         red = (red_img_mask==255)
@@ -73,10 +74,10 @@ class color_detect :
 
         # state publisher
         state_msg=String()
-        if redPixels >=self.blue_threshold:
-            state_msg.data = "red"
-        elif bluePixels >=self.red_threshold:
-            state_msg.data="blue"
+        if redPixels >=self.red_threshold:
+            state_msg.data = "red"+str(redPixels)
+        elif bluePixels >=self.blue_threshold:
+            state_msg.data="blue"+str(bluePixels)
         else:
             state_msg.data = "unknown"
         self.state_pub.publish(state_msg)

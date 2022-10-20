@@ -1,12 +1,12 @@
-blue_threshold : 10
-blue_h_min : 30
+blue_threshold : 20
+blue_h_min : 40
 blue_s_min : 90
 blue_v_min :  30
-blue_h_max : 90
+blue_h_max : 127
 blue_s_max : 200
 blue_v_max :  150
 
-red_threshold : 10
+red_threshold : 50
 red_h_min : 0
 red_s_min : 45
 red_v_min : 80
