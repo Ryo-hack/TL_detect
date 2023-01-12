@@ -76,9 +76,9 @@ class color_detect :
         # state publisher
         state_msg=String()
         if redPixels >=self.red_threshold*(height*width):
-            state_msg.data = "red"+str(redPixels/(height*width))
+            state_msg.data = "red" #+str(redPixels/(height*width))
         elif bluePixels >=self.blue_threshold*(height*width):
-            state_msg.data="blue"+str(bluePixels/(height*width))
+            state_msg.data="blue" #+str(bluePixels/(height*width))
         else:
             state_msg.data = "unknown"
         self.state_pub.publish(state_msg)

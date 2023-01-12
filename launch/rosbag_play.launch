@@ -6,7 +6,7 @@
         <remap from="out" to="/image_raw" />
     </node>-->
 
-    <node pkg="rosbag" type="play" name="rosbag" required="true" args="/home/share/rosbag/ou2.bag">
+    <node pkg="rosbag" type="play" name="rosbag" required="true" args="/home/share/rosbag/2022-10-22-04-13-20.bag">
         <remap from="camera/image_raw" to="image_raw"/>
     </node>
 
